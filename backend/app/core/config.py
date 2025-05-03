@@ -33,11 +33,22 @@ class Settings(BaseSettings):
     DB_NAME: str
 
     # Session settings
-    REQUESTS_PER_MINUTES: int
+    RATE_LIMIT_PER_MINUTE: int
+
+    # API settings
+    API_V1_STR: str
+    
+    # CORS settings
+    CORS_ORIGINS: List[str]
+
+    # SendGrid settings
+    SENDGRID_API_KEY: str
+    SENDGRID_FROM_EMAIL: str = "noreply@image-classification.com"
+    SENDGRID_FROM_NAME: str = "Image Classification"
 
     @property
     def DATABASE_URL(self) -> str:
-        return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{SELF.DB_HOST}:{SELF.DB_PORT}/{self.DB_NAME}"
+        return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     class Config:
         env_file = ENV_PATH

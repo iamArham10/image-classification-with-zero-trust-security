@@ -1,10 +1,7 @@
-from passlib.context import CryptContext
-import secrets
 from fastapi import Request
 from user_agents import parse
 import re
-
-pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
+import bcrypt
 
 def is_strong_password(password: str) -> bool:
     return (
@@ -15,15 +12,15 @@ def is_strong_password(password: str) -> bool:
         and re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)
     )
 
-def get_password_hash(password: str) -> str:
-    salt = secrets.token_hex(16)
-    password_with_salt = password + salt
-    hashed_password = pwd_context.hash(password_with_salt)
-    return hashed_password, salt
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify if the provided password matches the hashed password."""
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-def verify_password(plain_password: str, hashed_password: str, salt: str) -> bool:
-    pass_with_salt = plain_password + salt
-    return pwd_context.verify(pass_with_salt, hashed_password)
+def get_password_hash(password: str) -> str:
+    """Generate a hashed password with a salt."""
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed_password.decode('utf-8')
 
 def get_client_ip(request: Request) -> str:
     # x_forwarded is used if behind a proxy/load balancer
@@ -42,7 +39,5 @@ def get_device_info(request: Request) -> dict:
         "os": user_agent.os.family,
         "browser": user_agent.browser.family,
         "device": user_agent.device.family,
-        "is_mobile": user_agent.is_mobile,
-        "is_pc": user_agent.is_pc,
         "user_agent": user_agent_str
     }

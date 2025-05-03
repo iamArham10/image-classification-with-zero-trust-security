@@ -9,7 +9,7 @@ import jwt
 from ..core.config import settings
 from ..utils.token import decode_token
 from ..db.session import SessionLocal
-from ..models.user import User
+from ..models.base_user import BaseUser
 
 class SessionMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
