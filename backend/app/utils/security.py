@@ -23,21 +23,20 @@ def get_password_hash(password: str) -> str:
     return hashed_password.decode('utf-8')
 
 def get_client_ip(request: Request) -> str:
-    # x_forwarded is used if behind a proxy/load balancer
     x_forwarded_for = request.headers.get("X-Forwarded-For")
     if x_forwarded_for:
         ip = x_forwarded_for.split(",")[0]
     else:
         ip = request.client.host # direct client IP
-    return ip
+    return ip if ip else "unknown"
 
 def get_device_info(request: Request) -> dict:
     user_agent_str = request.headers.get("User-Agent", "unknown")
     user_agent = parse(user_agent_str)
 
     return {
-        "os": user_agent.os.family,
-        "browser": user_agent.browser.family,
-        "device": user_agent.device.family,
-        "user_agent": user_agent_str
+        "os": user_agent.os.family if user_agent.os else "unknown",
+        "browser": user_agent.browser.family if user_agent.browser else "unknown",
+        "device": user_agent.device.family if user_agent.device else "unknown",
+        "user_agent": user_agent_str if user_agent_str else "unknown"
     }

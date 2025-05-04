@@ -20,4 +20,4 @@ class ImageClassification(Base):
     confidence_score = Column(Numeric(5, 2))
     process_time_ms = Column(Integer)
     status = Column(Enum(ClassificationStatusEnum), nullable=False)
-    ip_address = Column(String(45))
+    encryption_salt = Column(String(32))  # Store salt as hex string

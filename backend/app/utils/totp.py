@@ -9,7 +9,7 @@ import base64
 def generate_totp_secret():
     return pyotp.random_base32()
 
-def get_totp_uri(secret: str, username: str, issuer: str = "AttendanceSystem"):
+def get_totp_uri(secret: str, username: str, issuer: str = "ImageClassificationSystem"):
     totp = pyotp.TOTP(secret)
     return totp.provisioning_uri(name=username, issuer_name=issuer)
 

@@ -14,12 +14,10 @@ from .sendgrid_service import sendgrid_service
 class EmailService:
     @staticmethod
     def generate_verification_code() -> str:
-        """Generate a 6-digit verification code"""
         return ''.join(random.choices(string.digits, k=6))
 
     @staticmethod
     def send_verification_email(email: str, code: str):
-        """Send verification email with code"""
         subject = "Email Verification Code"
         content = f"""
         <html>
@@ -53,22 +51,18 @@ class EmailService:
                 detail="User not found"
             )
 
-        # Generate verification code
         verification_code = EmailService.generate_verification_code()
         
-        # Store verification code and expiry in user record
         user.email_verification_code = verification_code
         user.email_verification_expires_at = datetime.now() + timedelta(minutes=1)
         db.commit()
 
-        # Send verification email
         EmailService.send_verification_email(user.email, verification_code)
 
         return verification_code
 
     @staticmethod
     def verify_email(db: Session, user_id: int, code: str) -> bool:
-        """Verify email with provided code"""
         user = db.query(BaseUser).filter(BaseUser.user_id == user_id).first()
         if not user:
             raise HTTPException(
@@ -76,13 +70,11 @@ class EmailService:
                 detail="User not found"
             )
 
-        # Check if code matches and is not expired
         if (user.email_verification_code != code or 
             not user.email_verification_expires_at or 
             user.email_verification_expires_at < datetime.now()):
             return False
 
-        # Mark email as verified
         user.is_email_verified = True
         user.email_verification_code = None
         user.email_verification_expires_at = None

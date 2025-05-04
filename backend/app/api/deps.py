@@ -9,13 +9,13 @@ from ..models.base_user import BaseUser
 from ..models.enums import UserTypeEnum
 from ..core.config import settings
 from ..utils.security import get_client_ip, get_device_info
-
+from typing import Optional
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}auth/login")
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
-    request: Request = None
+    request: Request = None,
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -64,7 +64,6 @@ async def get_current_user(
             detail="User is inactive"
         )
 
-    # update last activity
     user.last_activity = datetime.now()
     db.commit()
 

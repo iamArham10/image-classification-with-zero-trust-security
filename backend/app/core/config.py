@@ -46,6 +46,7 @@ class Settings(BaseSettings):
     SENDGRID_FROM_EMAIL: str = "noreply@image-classification.com"
     SENDGRID_FROM_NAME: str = "Image Classification"
 
+
     @property
     def DATABASE_URL(self) -> str:
         return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"

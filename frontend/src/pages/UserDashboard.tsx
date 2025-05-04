@@ -1,32 +1,63 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container,
   Box,
   Typography,
   AppBar,
   Toolbar,
   Button,
-  Grid,
-  Card,
-  CardContent,
-  TextField,
-  CircularProgress,
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
+import ClassificationInterface from '../components/ClassificationInterface';
+
+interface ClassificationHistory {
+  id: string;
+  imageUrl: string;
+  result: string;
+  confidence: number;
+  timestamp: string;
+  status: string;
+}
 
 const UserDashboard = () => {
   const { isAuthenticated, logout, userType } = useAuth();
   const navigate = useNavigate();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [classificationResult, setClassificationResult] = useState<any>(null);
+  const [classificationHistory, setClassificationHistory] = useState<ClassificationHistory[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated || userType !== 'user') {
       navigate('/login');
       return;
     }
+
+    // Fetch classification history
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/classification/history', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch history');
+        }
+
+        const history = await response.json();
+        setClassificationHistory(history.map((item: any) => ({
+          id: item.classification_id.toString(),
+          imageUrl: `http://localhost:8000/api/v1/classification/image/${item.classification_id}`,
+          result: item.top_prediction,
+          confidence: item.confidence_score,
+          timestamp: new Date(item.classification_timestamp).toLocaleString(),
+          status: item.status
+        })));
+      } catch (error) {
+        console.error('Error fetching history:', error);
+      }
+    };
+
+    fetchHistory();
   }, [isAuthenticated, userType, navigate]);
 
   const handleLogout = () => {
@@ -34,32 +65,50 @@ const UserDashboard = () => {
     navigate('/login');
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
+  const handleClassify = async (image: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', image);
+
+      const response = await fetch('http://localhost:8000/api/v1/classification/classify', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Classification failed');
+      }
+
+      const result = await response.json();
+      
+      // Add to history
+      const newHistoryItem: ClassificationHistory = {
+        id: result.classification_id.toString(),
+        imageUrl: URL.createObjectURL(image),
+        result: result.top_prediction,
+        confidence: result.confidence_score,
+        timestamp: new Date().toLocaleString(),
+        status: result.confidence_score >= 0.60 ? 'success' : 'failed'
+      };
+      
+      setClassificationHistory(prev => [newHistoryItem, ...prev]);
+      
+      return {
+        top_prediction: result.top_prediction,
+        confidence_score: result.confidence_score
+      };
+    } catch (error) {
+      console.error('Classification error:', error);
+      throw error;
     }
   };
 
-  const handleClassify = async () => {
-    if (!selectedFile) return;
-
-    setIsLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append('image', selectedFile);
-
-      const response = await fetch('http://localhost:8000/api/v1/classify', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-      setClassificationResult(result);
-    } catch (error) {
-      console.error('Classification error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleHistoryItemClick = (item: ClassificationHistory) => {
+    // Handle history item click
+    console.log('History item clicked:', item);
   };
 
   return (
@@ -75,106 +124,13 @@ const UserDashboard = () => {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Image Classification
-        </Typography>
-        
-        <Grid container spacing={3}>
-          {/* Image Upload Card */}
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Upload Image
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Select an image to classify
-                </Typography>
-                <input
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  id="raised-button-file"
-                  type="file"
-                  onChange={handleFileChange}
-                />
-                <label htmlFor="raised-button-file">
-                  <Button
-                    variant="contained"
-                    component="span"
-                    sx={{ mr: 2 }}
-                  >
-                    Choose File
-                  </Button>
-                </label>
-                {selectedFile && (
-                  <Typography variant="body2">
-                    Selected: {selectedFile.name}
-                  </Typography>
-                )}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleClassify}
-                  disabled={!selectedFile || isLoading}
-                  sx={{ mt: 2, display: 'block' }}
-                >
-                  {isLoading ? <CircularProgress size={24} /> : 'Classify Image'}
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Results Card */}
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Classification Results
-                </Typography>
-                {classificationResult ? (
-                  <Box>
-                    <Typography variant="body1" gutterBottom>
-                      Top Prediction: {classificationResult.top_prediction}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                      Confidence: {(classificationResult.confidence_score * 100).toFixed(2)}%
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                      Processing Time: {classificationResult.process_time_ms}ms
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    Upload and classify an image to see results
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* History Card */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Classification History
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  View your past classification results
-                </Typography>
-                <Button 
-                  variant="contained" 
-                  sx={{ mt: 2 }}
-                  onClick={() => navigate('/user/history')}
-                >
-                  View History
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
+      <Box sx={{ p: 3 }}>
+        <ClassificationInterface
+          onClassify={handleClassify}
+          history={classificationHistory}
+          onHistoryItemClick={handleHistoryItemClick}
+        />
+      </Box>
     </Box>
   );
 };

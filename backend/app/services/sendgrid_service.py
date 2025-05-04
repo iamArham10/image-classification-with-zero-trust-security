@@ -8,17 +8,6 @@ class SendGridService:
         self.from_email = settings.SENDGRID_FROM_EMAIL
 
     def send_email(self, to_email: str, subject: str, content: str) -> bool:
-        """
-        Send an email using SendGrid
-        
-        Args:
-            to_email: Recipient email address
-            subject: Email subject
-            content: Email content (HTML)
-            
-        Returns:
-            bool: True if email was sent successfully, False otherwise
-        """
         try:
             message = Mail(
                 from_email=Email(self.from_email),
@@ -33,5 +22,5 @@ class SendGridService:
             print(f"Error sending email: {str(e)}")
             return False
 
-# Create a singleton instance
+
 sendgrid_service = SendGridService() 

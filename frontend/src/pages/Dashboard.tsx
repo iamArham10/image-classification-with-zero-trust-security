@@ -46,8 +46,8 @@ const Dashboard = () => {
 
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h4" gutterBottom>
-            Welcome to Dashboard
+          <Typography variant="h4" component="h1" className="mb-4">
+            Image Classification System
           </Typography>
           
           {userType === 'admin' ? (
@@ -56,7 +56,7 @@ const Dashboard = () => {
                 Admin Dashboard
               </Typography>
               <Typography variant="body1">
-                Welcome to the admin dashboard. Here you can manage users, view attendance reports, and configure system settings.
+                Welcome to the admin dashboard. Here you can manage users, view classification reports, and configure system settings.
               </Typography>
               {/* Add admin-specific components here */}
             </>
@@ -66,7 +66,7 @@ const Dashboard = () => {
                 User Dashboard
               </Typography>
               <Typography variant="body1">
-                Welcome to your dashboard. Here you can view your attendance records and other personal information.
+                Welcome to your dashboard. Here you can view your classification records and other personal information.
               </Typography>
               {/* Add user-specific components here */}
             </>

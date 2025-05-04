@@ -19,12 +19,10 @@ class MFAService:
         if not user:
             return None
 
-        # Generate TOTP secret
         secret = generate_totp_secret()
         user.totp_secret = secret
         db.commit()
 
-        # Generate QR code
         uri = get_totp_uri(secret, user.username)
         qr_code = get_qr_code_image(uri)
         return {
@@ -38,7 +36,6 @@ class MFAService:
         if not user or not user.totp_secret:
             return False
         
-        # verify token
         if verify_totp(user.totp_secret, token):
             user.mfa_enabled = True
             db.commit()
