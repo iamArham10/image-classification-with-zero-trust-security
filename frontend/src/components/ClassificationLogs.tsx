@@ -47,7 +47,7 @@ const ClassificationLogs: React.FC<ClassificationLogsProps> = ({ token }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/classification/history-all?limit=${limit}&offset=${page * limit}`,
+        `https://localhost:8000/api/v1/classification/history-all?limit=${limit}&offset=${page * limit}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -77,7 +77,7 @@ const ClassificationLogs: React.FC<ClassificationLogsProps> = ({ token }) => {
   const handleViewImage = async (classificationId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/classification/image/${classificationId}`,
+        `https://localhost:8000/api/v1/classification/image/${classificationId}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,

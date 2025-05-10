@@ -44,7 +44,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ token }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/user/list', {
+      const response = await fetch('https://localhost:8000/api/v1/user/list', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -64,7 +64,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ token }) => {
 
   const handleUpdateUser = async (userId: number, updates: Partial<User>) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/user/${userId}`, {
+      const response = await fetch(`https://localhost:8000/api/v1/user/${userId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

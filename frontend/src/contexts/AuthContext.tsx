@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       formData.append('password', password);
 
       console.log('Sending login request for username:', username);
-      const response = await axios.post('http://localhost:8000/api/v1/auth/login', 
+      const response = await axios.post('https://localhost:8000/api/v1/auth/login', 
         formData,
         {
           headers: {
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error('No authentication token available');
       }
 
-      const response = await axios.post('http://localhost:8000/api/v1/auth/setup-mfa', {}, {
+      const response = await axios.post('https://localhost:8000/api/v1/auth/setup-mfa', {}, {
         headers: {
           'Authorization': `Bearer ${currentToken}`
         }
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       };
 
       console.log('MFA Setup Verification Request:', {
-        url: 'http://localhost:8000/api/v1/auth/verify-mfa-setup',
+        url: 'https://localhost:8000/api/v1/auth/verify-mfa-setup',
         data: requestData,
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       const response = await axios.post(
-        'http://localhost:8000/api/v1/auth/verify-mfa-setup',
+        'https://localhost:8000/api/v1/auth/verify-mfa-setup',
         requestData,
         {
           headers: {
@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('Sending MFA verification request:', requestData);
 
       const response = await axios.post(
-        'http://localhost:8000/api/v1/auth/verify-mfa',
+        'https://localhost:8000/api/v1/auth/verify-mfa',
         requestData,
         {
           headers: {

@@ -191,7 +191,7 @@ async def verify_mfa(
                 ip_address=get_client_ip(request),
                 user_agent=get_device_info(request).get("user_agent"),
                 status=AuditStatusEnum.failure,
-                resource=f"User {mfa_data.user_id} {mfa_data.email} {mfa_data.username} MFA verification failed",
+                resource=f"User {mfa_data.user_id}  MFA verification failed",
                 details=f"Invalid MFA token provided for user {mfa_data.user_id}"
             )
 
@@ -210,8 +210,8 @@ async def verify_mfa(
                 ip_address=get_client_ip(request),
                 user_agent=get_device_info(request).get("user_agent"),
                 status=AuditStatusEnum.failure,
-                resource=f"User {mfa_data.user_id} {mfa_data.email} {mfa_data.username} not found",
-                details=f"User {mfa_data.user_id} {mfa_data.email} {mfa_data.username} not found during MFA verification"
+                resource=f"User {mfa_data.user_id}  not found",
+                details=f"User {mfa_data.user_id}  not found during MFA verification"
             )
 
             raise HTTPException(
@@ -260,7 +260,7 @@ async def verify_mfa(
             ip_address=get_client_ip(request),
             user_agent=get_device_info(request).get("user_agent"),
             status=AuditStatusEnum.failure,
-            resource=f"User {mfa_data.user_id} {mfa_data.email} {mfa_data.username} MFA verification failed",
+            resource=f"User {mfa_data.user_id} MFA verification failed",
             details=str(e)
         )
         raise HTTPException(
@@ -463,7 +463,7 @@ async def verify_mfa_setup(
                 ip_address=get_client_ip(request),
                 user_agent=get_device_info(request).get("user_agent"),
                 status=AuditStatusEnum.failure,
-                resource=f"User {mfa_data.user_id} {mfa_data.email} {mfa_data.username} MFA setup verification failed",
+                resource=f"User {mfa_data.user_id} MFA setup verification failed",
                 details=f"Invalid MFA token provided for setup verification"
             )
 
@@ -479,8 +479,8 @@ async def verify_mfa_setup(
             ip_address=get_client_ip(request),
             user_agent=get_device_info(request).get("user_agent"),
             status=AuditStatusEnum.success,
-            resource=f"User {mfa_data.user_id} {mfa_data.email} {mfa_data.username} MFA setup verified",
-            details=f"User {mfa_data.user_id} {mfa_data.email} {mfa_data.username} successfully verified MFA setup"
+            resource=f"User {mfa_data.user_id}  MFA setup verified",
+            details=f"User {mfa_data.user_id}  successfully verified MFA setup"
         )
         
         return {
@@ -494,7 +494,7 @@ async def verify_mfa_setup(
             ip_address=get_client_ip(request),
             user_agent=get_device_info(request).get("user_agent"),
             status=AuditStatusEnum.failure,
-            resource=f"User {mfa_data.user_id} {mfa_data.email} {mfa_data.username} MFA setup verification failed",
+            resource=f"User {mfa_data.user_id} MFA setup verification failed",
             details=str(e)
         )
         raise HTTPException(

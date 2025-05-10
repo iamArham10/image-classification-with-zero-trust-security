@@ -58,7 +58,7 @@ const AdminManagement: React.FC<AdminManagementProps> = ({ token }) => {
 
   const fetchAdmins = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/admin/list', {
+      const response = await fetch('https://localhost:8000/api/v1/admin/list', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -78,7 +78,7 @@ const AdminManagement: React.FC<AdminManagementProps> = ({ token }) => {
 
   const handleUpdateAdmin = async (adminId: number, updates: Partial<Admin>) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/admin/${adminId}`, {
+      const response = await fetch(`https://localhost:8000/api/v1/admin/${adminId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -107,7 +107,7 @@ const AdminManagement: React.FC<AdminManagementProps> = ({ token }) => {
 
   const handleUnlockAdmin = async (adminId: number) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/admin/${adminId}`, {
+      const response = await fetch(`https://localhost:8000/api/v1/admin/${adminId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -136,7 +136,7 @@ const AdminManagement: React.FC<AdminManagementProps> = ({ token }) => {
 
   const handleCreateAdmin = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/admin/create', {
+      const response = await fetch('https://localhost:8000/api/v1/admin/create', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

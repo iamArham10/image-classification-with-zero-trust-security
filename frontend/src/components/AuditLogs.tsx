@@ -53,7 +53,7 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ token }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/audit/list?limit=${limit}&offset=${page * limit}`,
+        `https://localhost:8000/api/v1/audit/list?limit=${limit}&offset=${page * limit}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,

@@ -39,6 +39,11 @@ class ClassificationService:
             self.db.flush()
             print(f"Created classification record with ID: {classification.classification_id}")  # Debug log
             
+            # Store image first, before classification attempt
+            print("Attempting to store image...")  # Debug log
+            image_path = await self.image_storage.store_image(image_bytes, classification.classification_id)
+            print(f"Image stored at: {image_path}")  # Debug log
+            
             try:
                 predictions = classify_image(image_bytes)
                 top_prediction = predictions[0]
@@ -54,10 +59,6 @@ class ClassificationService:
                 
                 process_time_ms = int((time.time() - start_time) * 1000)
                 classification.process_time_ms = process_time_ms
-                
-                print("Attempting to store image...")  # Debug log
-                image_path = await self.image_storage.store_image(image_bytes, classification.classification_id)
-                print(f"Image stored at: {image_path}")  # Debug log
                 
                 self.db.commit()
                 self.db.refresh(classification) 

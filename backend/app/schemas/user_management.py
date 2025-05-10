@@ -30,12 +30,6 @@ class UserListResponse(BaseModel):
     is_active: Optional[bool] = Field(None, description="User account active status")
     locked_until: Optional[datetime] = Field(None, description="Account lock expiry time")
 
-    @field_validator('locked_until')
-    def validate_locked_until(cls, v):
-        if v and v < datetime.now():
-            raise ValueError('Lock expiry time must be in the future')
-        return v    
-    
 class UserUpdateResponse(BaseModel):
     success: bool = Field(..., description="Operation success status")
     message: str = Field(..., min_length=1, max_length=500, description="Response message")

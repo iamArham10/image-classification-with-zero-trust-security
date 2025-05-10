@@ -21,11 +21,11 @@ class ClassificationResponse(BaseModel):
 class ClassificationHistory(BaseModel):
     classification_id: int
     image_hash: str
-    original_filename: str
+    original_filename: Optional[str] = None
     classification_timestamp: datetime
     top_prediction: str
-    confidence_score: float
-    process_time_ms: int
+    confidence_score: Optional[float] = None
+    process_time_ms: Optional[int] = None
     status: str
 
     class Config:
