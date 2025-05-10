@@ -146,8 +146,7 @@ async def get_image(
 ):
     try:
         classification = db.query(ImageClassification).filter(
-            ImageClassification.classification_id == classification_id,
-            ImageClassification.user_id == current_user.user_id
+            ImageClassification.classification_id == classification_id
         ).first()
         
         if not classification:

@@ -146,10 +146,12 @@ const ClassificationLogs: React.FC<ClassificationLogsProps> = ({ token }) => {
                   <TableCell>
                     {new Date(log.classification_timestamp).toLocaleString()}
                   </TableCell>
-                  <TableCell>{log.top_prediction}</TableCell>
-                  <TableCell>{(log.confidence_score * 100).toFixed(2)}%</TableCell>
+                  <TableCell>{log.top_prediction || 'Unknown'}</TableCell>
+                  <TableCell>
+                    {log.confidence_score ? `${(log.confidence_score * 100).toFixed(2)}%` : 'N/A'}
+                  </TableCell>
                   <TableCell>{log.status}</TableCell>
-                  <TableCell>{log.process_time_ms}ms</TableCell>
+                  <TableCell>{log.process_time_ms ? `${log.process_time_ms}ms` : 'N/A'}</TableCell>
                   <TableCell>
                     <Button
                       variant="outlined"
